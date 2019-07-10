@@ -41,16 +41,19 @@ function Remove-FunctionsFromScript {
         $offset = 0
         Write-Verbose "$($functionDefinitions.Count) Functions found"
         foreach ($function in $functionDefinitions) {
-            Write-Verbose "Removing $($function.Name)"
-            #Find Start and End Line Numbers of Function (minus 1 as the list starts from zero)
-            #And AST line number starts from 1
-            $start = ($function.Extent.StartLineNumber - 1)
-            $end = ($function.Extent.EndLineNumber - 1)
-            #Add 1 (so the RemoveRange include the last line)
-            $count = ($end - $start) + 1
-            #Remove All lines from List
-            $fileLines.RemoveRange(($start - $offset), $count)
-            $offset = $offset + $count
+            #Only Export standard functions (exclude class methods and the like)
+            if ($function.Extent.StartScriptPosition.Line -like "function*") {
+                Write-Verbose "Removing $($function.Name)"
+                #Find Start and End Line Numbers of Function (minus 1 as the list starts from zero)
+                #And AST line number starts from 1
+                $start = ($function.Extent.StartLineNumber - 1)
+                $end = ($function.Extent.EndLineNumber - 1)
+                #Add 1 (so the RemoveRange include the last line)
+                $count = ($end - $start) + 1
+                #Remove All lines from List
+                $fileLines.RemoveRange(($start - $offset), $count)
+                $offset = $offset + $count
+            }
         }
         Write-Verbose "FINISH: Parsing Functions from: $($path)"
     } catch {
@@ -142,8 +145,11 @@ function Copy-FunctionsFromScript {
         # Output the functions to a temporary file
         Write-Verbose "$($functionDefinitions.Count) Functions found"
         foreach ($function in $functionDefinitions) {
-            Write-Verbose "Writing $($function.Name)"
-            Write-Output $function.Extent.Text | Out-File $NewPath -Append
+            #Only Export standard functions (exclude class methods and the like)
+            if ($function.Extent.StartScriptPosition.Line -like "function*") {
+                Write-Verbose "Writing $($function.Name)"
+                Write-Output $function.Extent.Text | Out-File $NewPath -Append
+            }
         }
         Write-Verbose "FINISH: Parsing Functions from: $($path)"
     } catch {
