@@ -7,7 +7,7 @@ Describe Remove-FunctionsFromScript {
     Context "Script Containing 2 Standard functions" {
 
         #Mocks
-
+        #
         #Assert
         #Add Parameters and call function
         $Parameters = @{
