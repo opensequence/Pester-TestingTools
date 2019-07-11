@@ -49,7 +49,6 @@ $VerbosePreference = "SilentlyContinue"
 
 #endregion Parameters
 
-#Requires -Modules @{ModuleName='AWSPowerShell.NetCore';ModuleVersion='3.3.428.0'}
 #====================================================================================================
 #                                             Functions
 #====================================================================================================
