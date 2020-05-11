@@ -96,7 +96,7 @@ function New-FunctionFromScript {
     Write-Output "Function $($FunctionName) {" | Out-File $NewPath
     foreach ($Line in $fileLines) {
         #Replace Exits with Throws (to allow us to test for them)
-        $Line = $Line -ireplace [regex]::Escape("exit "), "Throw "
+        $Line = $Line -ireplace "\bexit\b", "Throw"
         #Comment out dot sources (specifiy them in testing)
         $Line = $Line -ireplace [regex]::Escape(". ."), "#. ."
         #Comment out dot sources (specifiy them in testing)
